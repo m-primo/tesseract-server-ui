@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tesseract-server-ui</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container my-5" id="root">
+    <h1>Tesseract Server User Interface (V1.1)</h1>
+
+    <form enctype="multipart/form-data" @submit.prevent="submitForm">
+      <div class="mb-3">
+        <label for="fileInput" class="form-label">Upload the image</label>
+        <input class="form-control" type="file" id="fileInput" ref="file" />
+      </div>
+      <div class="mb-3">
+        <label for="languageSelect" class="form-label">Select the language(s) in the image</label>
+        <select multiple class="form-select" id="languageSelect" v-model="languages">
+          <option value="ara">Arabic</option>
+          <option value="eng">English</option>
+          <option value="spa">Spanish</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" v-model="debug">
+        <label class="btn btn-outline-dark" for="btncheck1">Debug Mode</label>
+      </div>
+      <button type="submit" class="btn btn-primary" :disabled="processing">
+        <template v-if="processing">
+          <div class="spinner-grow spinner-grow-sm me-2" role="status"></div>
+          Processing...
+        </template>
+        <template v-else>Process</template>
+      </button>
+    </form>
+
+    <div class="my-4" v-if="error">
+      <div class="alert alert-danger mt-3 text-break" style="white-space: break-spaces" v-html="error"></div>
+    </div>
+    <div class="mt-4" v-if="result">
+      <div class="alert alert-success text-break" style="white-space: break-spaces" v-if="result.stdout" v-html="result.stdout"></div>
+      <div class="alert mt-3 text-break" style="white-space: break-spaces" v-if="result.stderr" :class="[result.stderr.toLowerCase().includes('warning: ') ? 'alert-warning' : 'alert-danger']" v-html="result.stderr"></div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script>
+    new Vue({
+      el: '#root',
+      data: {
+        file: null,
+        languages: [],
+        debug: false,
+        processing: false,
+        result: null,
+        error: null,
+      },
+      methods: {
+        submitForm() {
+          this.error = null;
+          this.file = this.$refs.file.files[0];
+          if(!this.file) {
+            this.error = 'Please select the image.';
+            return;
+          }
+          if(this.languages.length <= 0) {
+            this.error = 'Please select at least one language.';
+            return;
+          }
+          let formData = new FormData();
+          formData.append('file', this.file);
+          formData.append('languages', JSON.stringify(this.languages));
+          formData.append('debug', this.debug ? '1' : '0');
+          this.apiRequest(formData);
+        },
+        async apiRequest(formData) {
+          this.result = null;
+          this.processing = true;
+          try {
+            const response = await fetch('process.php', { method: 'POST', body: formData });
+            const data = await response.json();
+            console.info('data', data);
+            if(!response.ok) {
+              throw new Error(data?.error);
+            }
+            this.result = data.data;
+          } catch(error) {
+            if(typeof error === 'object' && error.hasOwnProperty('error')) {
+              this.error = error.error;
+            } else {
+              this.error = error;
+            }
+            console.warn('error', error);
+          } finally {
+            this.processing = false;
+          }
+        },
+      }
+    });
+  </script>
+</body>
+</html>
