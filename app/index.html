@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tesseract-server-ui</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link href="vendor/bootstrap@5.3.0.min.css" rel="stylesheet">
 </head>
 <body>
   <div class="container my-5" id="root">
-    <h1>Tesseract Server User Interface (V1.1)</h1>
+    <h1>Tesseract Server User Interface (V1.2)</h1>
 
     <form enctype="multipart/form-data" @submit.prevent="submitForm">
       <div class="mb-3">
@@ -44,8 +44,8 @@
       <div class="alert mt-3 text-break" style="white-space: break-spaces" v-if="result.stderr" :class="[result.stderr.toLowerCase().includes('warning: ') ? 'alert-warning' : 'alert-danger']" v-html="result.stderr"></div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="vendor/bootstrap@5.3.0.bundle.min.js"></script>
+  <script src="vendor/vue@2.6.14.min.js"></script>
   <script>
     new Vue({
       el: '#root',

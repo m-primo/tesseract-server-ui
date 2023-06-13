@@ -4,10 +4,19 @@
 
 ## Pre-Installation
 
+### With Docker
+
 1. You should have [Docker](https://docs.docker.com/engine/install/) installed.
 2. You should have [tesseract-server](https://github.com/hertzg/tesseract-server) up and running.
 
+### Without Docker
+
+1. You should have [php](https://www.php.net/) (tested with php 7.3, php 7.4, php 8.0 & php 8.1).
+2. You should have [tesseract-server](https://github.com/hertzg/tesseract-server) up and running.
+
 ## Installation
+
+### Docker Method
 
 1. Clone this repository:
 
@@ -67,4 +76,31 @@
 
     define('CFG', $config);
     ?>
+    ```
+
+### Non-Docker Method
+
+1. Clone this repository:
+
+    ```bash
+    git clone https://github.com/m-primo/tesseract-server-ui.git
+    ```
+
+2. Edit `config.php` to match the tesseract server host & port. The final `config.php` should like this:
+
+    ```php
+    <?php
+    $config = [
+        'url' => 'http://127.0.0.1:8884',
+        'timeout' => 0, // 0 to disable
+    ];
+
+    define('CFG', $config);
+    ?>
+    ```
+
+3. Run the web ui with the PHP built-in development server (replace `<host>` with destination host -usually 127.0.0.1 or 0.0.0.0-, and `<port>` with any port you want):
+
+    ```bash
+    php -S <host>:<port> -t ./app
     ```
