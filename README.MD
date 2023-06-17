@@ -18,6 +18,19 @@
 
 ### Docker Method
 
+#### From the container registry
+
+```bash
+docker run --name tesseract-ocr-server-web-ui -d --restart unless-stopped -v <config_path>:/app/config -p <port>:8080 ghcr.io/m-primo/tesseract-ocr-server-web-ui:latest
+```
+
+Replace `<config_path>`, with the app configuration path.
+Replace `<port>`, with the port you want the app to listen on.
+
+After this, start from step number **4** in **[From Source](#from-source)**.
+
+#### From Source
+
 1. Clone this repository:
 
     ```bash
@@ -33,8 +46,11 @@
 3. Run the Docker container (edit whatever you want):
 
     ```bash
-    docker run --name tesseract-ocr-server-web-ui -d --restart unless-stopped -v /path/to/config:/app/config -p 8080:8080 tesseract-ocr-server-web-ui
+    docker run --name tesseract-ocr-server-web-ui -d --restart unless-stopped -v <config_path>:/app/config -p <port>:8080 tesseract-ocr-server-web-ui
     ```
+
+    Replace `<config_path>`, with the app configuration path.
+    Replace `<port>`, with the port you want the app to listen on.
 
 4. Create a Docker network to connect both containers to each other:
 
